@@ -2,7 +2,7 @@ import boto3
 
 client = boto3.client('ec2')
 
-def find_stale_snapshots():
+def lambda_handler(event, context):
     # get all snapshots owned by the user.
     ebs_snapshots = client.describe_snapshots(OwnerIds=['self'])
     print(f'Total Snapshots: {len(ebs_snapshots["Snapshots"])} \n{[snapshot['SnapshotId'] for snapshot in ebs_snapshots['Snapshots']]}')
@@ -41,5 +41,4 @@ def find_stale_snapshots():
                     client.delete_snapshot(SnapshotId=snapshot_id)
                     print(f"Deleted EBS snapshot {snapshot_id} as its associated volume was not found.")
 
-
-find_stale_snapshots()
+lambda_handler(None, None)
